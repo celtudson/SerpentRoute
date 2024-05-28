@@ -1,0 +1,27 @@
+{
+	"[haxe]": {
+		"editor.formatOnSave": true,
+		"editor.formatOnPaste": false
+	},
+	"haxe.exclude": [
+		"js.html.audio",
+		"js.html.eme",
+		"js.html.idb",
+		"js.html.midi",
+		"js.html.push",
+		"js.html.rtc",
+		"js.html.svg",
+		"js.lib.intl",
+		"js.lib.webassembly",
+		"kha.graphics1",
+		"kha.graphics5_",
+		"kha.netsync",
+	],
+	"editor.codeActionsOnSave": {
+		"source.sortImports": "explicit"
+	},
+	"search.exclude": {
+		"build": true,
+	},
+	"kha.defaultTarget": "HTML5 (Web)"
+}

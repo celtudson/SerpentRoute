@@ -1,0 +1,42 @@
+{
+	"indentation": {
+		"tabWidth": 2
+	},
+	"sameLine": {
+		"ifBody": "same",
+		"elseBody": "same",
+		"ifElse": "keep",
+		"comprehensionFor": "keep",
+		"forBody": "keep"
+	},
+	"wrapping": {
+		"maxLineLength": 128,
+		"arrayMatrixWrap": "matrixWrapNoAlign",
+		"arrayWrap": {
+			"defaultWrap": "keep"
+		},
+		"functionSignature": {
+			"defaultWrap": "keep"
+		},
+		"callParameter": {
+			"defaultWrap": "keep"
+		},
+		"methodChain": {
+			"rules": []
+		},
+		"opAddSubChain": {
+			"rules": [
+				{
+					"conditions": [
+						{
+							"cond": "anyItemLength >= n",
+							"value": 200
+						}
+					],
+					"location": "beforeLast",
+					"type": "onePerLineAfterFirst"
+				}
+			]
+		}
+	}
+}
