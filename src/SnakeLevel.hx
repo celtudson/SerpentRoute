@@ -28,6 +28,8 @@ class SnakeLevel {
 		if (snake.length < 1) return;
 		lastSnakeHeadX = snake[0].pos.x;
 		lastSnakeHeadY = snake[0].pos.y;
+		lastSnakeDeltaX = 0;
+		lastSnakeDeltaY = 0;
 		updateCollideMap();
 	}
 

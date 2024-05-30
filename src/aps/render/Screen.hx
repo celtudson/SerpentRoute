@@ -113,15 +113,20 @@ class Screen {
 	}
 
 	public var scale(default, null):Float = 1.0;
-	public var w(default, null):Int = 0;
-	public var h(default, null):Int = 0;
+	public var contentW(default, null):Int = 0;
+	public var contentH(default, null):Int = 0;
 	public var showFps:Bool = false;
 	public var isFpsScaled:Bool = false;
+	public var isIntegerScale:Bool = false;
+	public var renderW(default, null):Int = 0;
+	public var renderH(default, null):Int = 0;
 
 	public function setScale(_scale:Float):Void {
+		if (isIntegerScale && _scale >= 1) _scale = Std.int(_scale);
+		trace(_scale);
 		scale = _scale;
-		w = Std.int(System.windowWidth() / scale);
-		h = Std.int(System.windowHeight() / scale);
+		renderW = Std.int(System.windowWidth() / scale);
+		renderH = Std.int(System.windowHeight() / scale);
 		mouser.scale = scale;
 	}
 
@@ -151,7 +156,19 @@ class Screen {
 		mouser.scale = scale;
 	}
 
+	var prevScreenW:Float;
+	var prevScreenH:Float;
+
 	function _onUpdate():Void {
+		final w = System.windowWidth();
+		final h = System.windowHeight();
+		if (w != prevScreenW || h != prevScreenH) {
+			prevScreenW = w;
+			prevScreenH = h;
+			setScale(Math.min(w / contentW, h / contentH));
+			// trace("resized scale: " + scale);
+			onResize(scale);
+		}
 		onUpdate();
 		fps.update();
 	}
@@ -217,6 +234,8 @@ class Screen {
 	function onUpdate():Void {}
 
 	function onRender(_frame:Canvas):Void {}
+
+	function onResize(_newScale:Float):Void {}
 
 	function onKeyDown(_key:KeyCode):Void {}
 

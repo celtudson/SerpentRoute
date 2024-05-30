@@ -164,10 +164,10 @@ class Atlas {
 		_g.color = 0xFFFFFFFF;
 		_g.drawScaledImage(composedTexture, _x, _y, scaledSize, scaledSize);
 		_g.color = 0xFFFFFF00;
-		_g.drawRect(_x, _y, scaledSize, scaledSize, 2 / Main.scale);
+		_g.drawRect(_x, _y, scaledSize, scaledSize, 2 / Main.gameScale);
 		for (_inAtlas in atlasPieces) {
 			_g.drawRect(_x + _inAtlas.off.x * _scale, _y + _inAtlas.off.y * _scale,
-				_inAtlas.size.x * _scale, _inAtlas.size.y * _scale, 2 / Main.scale);
+				_inAtlas.size.x * _scale, _inAtlas.size.y * _scale, 2 / Main.gameScale);
 		}
 		_g.color = prev;
 	}
