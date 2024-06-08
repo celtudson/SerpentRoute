@@ -20,6 +20,8 @@ class Main {
 		final windowW = Std.int(gameW * gameScale);
 		final windowH = Std.int(gameH * gameScale);
 		#if kha_html5
+		canvas.style.display = "block";
+		canvas.style.outline = "none";
 		document.documentElement.style.padding = "0";
 		document.documentElement.style.margin = "0";
 		document.body.style.padding = "0";
@@ -44,7 +46,6 @@ class Main {
 
 	static function setFullWindowCanvas(_canvas:CanvasElement):Void {
 		#if kha_html5
-		_canvas.style.display = "block";
 		final resize = function() {
 			var w = document.documentElement.clientWidth;
 			var h = document.documentElement.clientHeight;

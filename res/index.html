@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+	<meta name="mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<title>un</title>
+	<script src="https://yandex.ru/games/sdk/v2"></script>
+	<script>
+		var ysdk;
+		var lb;
+		function trackReady() {
+			console.log("trackReady()");
+			if (ysdk.features.LoadingAPI) {
+				ysdk.features.LoadingAPI.ready(); // Показываем SDK, что игра загрузилась и можно начинать играть.
+			}
+		};
+
+		YaGames.init().then(_ysdk => {
+			ysdk = _ysdk;
+			ysdk.getLeaderboards().then(_lb => {
+				lb = _lb
+				updateRecordFromYG();
+			});
+
+			ysdk.adv.showFullscreenAdv();
+		});
+
+		var lbUserRecord;
+		function updateRecordFromYG() {
+			if (ysdk.isAvailableMethod('leaderboards.getLeaderboardPlayerEntry')) {
+				lb.getLeaderboardPlayerEntry("board")
+					.then(res => {
+						if (res) {
+							lbUserRecord = res.score;
+							//console.log(res);
+						}
+					})
+					.catch(err => {
+						if (err.code === 'LEADERBOARD_PLAYER_NOT_PRESENT') {
+							lbUserRecord = 0;
+							console.log("lb: нет записи");
+						}
+					});
+			}
+		}
+		function trySetNewRecord(value, objectFromGame) {
+			//console.log("lb: " + value);
+			if (value > lbUserRecord) {
+				console.log("lb: " + value + " рекорд-то новый, но посмотрим, удастся ли запушить");
+				if (lb && ysdk.isAvailableMethod('leaderboards.setLeaderboardScore')) {
+					lbUserRecord = value;
+					console.log("lb: можно запушить " + value);
+					lb.setLeaderboardScore('board', value).then(() => {
+						updateLeaderboardEntries(objectFromGame);
+					});
+				}
+			}
+		}
+		function updateLeaderboardEntries(objectFromGame) {
+			if (lb && ysdk.isAvailableMethod('leaderboards.getLeaderboardEntries')) {
+				lb.getLeaderboardEntries('board', { quantityTop: 10, includeUser: true, quantityAround: 5 })
+					.then(res => {
+						objectFromGame.userRank = res.userRank;
+						objectFromGame.entries = res.entries;
+						console.log("lb: " + objectFromGame);
+					});
+			}
+		}
+
+		function showFullscreenAdv() {
+			console.log("yad: showFullscreenAdv()");
+			ysdk.adv.showFullscreenAdv();
+		}
+	</script>
+</head>
+
+<body>
+	<canvas id="khanvas" width="800" height="600" tabindex="-1"></canvas>
+	<script src="kha.js"></script>
+</body>
+
+</html>

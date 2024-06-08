@@ -7,6 +7,7 @@ class SnakePart {
 	public final pos:Vec2Int;
 	public final prevTickPos:Vec2Int;
 	public var color:Int;
+	public var isBeyondEdge:Bool = false;
 
 	public function new(_x:Int, _y:Int, _color:Int) {
 		pos = {x: _x, y: _y};
@@ -76,19 +77,39 @@ class SnakeLevel {
 			x: snakeHead.pos.x + _deltaX,
 			y: snakeHead.pos.y + _deltaY
 		};
-		for (part in snake) {
+		var isAlreadyBeyondedPartJumped = false;
+		snake[snake.length - 1].isBeyondEdge = false;
+		for (i => part in snake) {
 			part.prevTickPos.x = part.pos.x;
 			part.prevTickPos.y = part.pos.y;
+			if (i > 0 && !isAlreadyBeyondedPartJumped) {
+				if (snake[i - 1].isBeyondEdge) {
+					isAlreadyBeyondedPartJumped = true;
+					part.isBeyondEdge = true;
+					for (j in 0...i) snake[j].isBeyondEdge = false;
+					// trace("isBeyondEdge: " + [for (part in snake) part.isBeyondEdge]);
+				}
+			}
 		}
 		if (lastSnakeHeadX == next.x && lastSnakeHeadY == next.y) return true;
 		lastSnakeDeltaX = _deltaX;
 		lastSnakeDeltaY = _deltaY;
 
 		// if (!(next.x > -1 && next.y > -1 && next.x < pathFinderMap.mapW && next.y < pathFinderMap.mapH)) return false;
-		if (next.x == -1) next.x += pathFinderMap.mapW;
-		else if (next.x == pathFinderMap.mapW) next.x -= pathFinderMap.mapW;
-		if (next.y == -1) next.y += pathFinderMap.mapH;
-		else if (next.y == pathFinderMap.mapH) next.y -= pathFinderMap.mapH;
+		if (next.x == -1) {
+			snakeHead.isBeyondEdge = true;
+			next.x += pathFinderMap.mapW;
+		} else if (next.x == pathFinderMap.mapW) {
+			snakeHead.isBeyondEdge = true;
+			next.x -= pathFinderMap.mapW;
+		}
+		if (next.y == -1) {
+			snakeHead.isBeyondEdge = true;
+			next.y += pathFinderMap.mapH;
+		} else if (next.y == pathFinderMap.mapH) {
+			snakeHead.isBeyondEdge = true;
+			next.y -= pathFinderMap.mapH;
+		}
 
 		final snakeEnd = snake[snake.length - 1];
 		if (pathFinderMap.costingMap[next.y][next.x] < 0 && !(snakeEnd.pos.x == next.x && snakeEnd.pos.y == next.y)) return false;
@@ -96,6 +117,7 @@ class SnakeLevel {
 		final prevSnakePartPos:Vec2Int = {x: snakeHead.pos.x, y: snakeHead.pos.y};
 		snakeHead.pos.x = lastSnakeHeadX = next.x;
 		snakeHead.pos.y = lastSnakeHeadY = next.y;
+
 		for (i in 1...snake.length) {
 			final part = snake[i];
 			final prevX = part.pos.x;
